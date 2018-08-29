@@ -18,11 +18,13 @@ class App extends Component {
   componentDidMount() {
     axios.get("http://localhost:3000")
       .then((response) => {
-        let i = 0;
-        for(; i < response.data.length; i++) {
+        for(let i = 0; i < response.data.length; i++) {
           const someList = [
             ...this.state.somethingCray,
-            response.data[i].id
+            {
+              id: response.data[i].id,
+              date: response.data[i].date,
+            }
           ]
           this.setState({ somethingCray: someList });
         }
@@ -44,20 +46,36 @@ class App extends Component {
         autoplay: 1
       }
     }
+    console.log({somethingCray});
     return (
       <div className="App">
-        <FaAngleLeft size={"10em"} color={iterator === 0 ? 'grey' : 'inherit'} onClick={() => this.changeIterator(-1)} />
-        {somethingCray ? (
+        <FaAngleLeft 
+          size={"10em"} 
+          color={iterator === 0 ? 'grey' : 'inherit'} 
+          onClick={() => this.changeIterator(-1)} 
+        />
+        {somethingCray.length > 0 ? (
             <YouTube
-              key={somethingCray[iterator]}
+              key={somethingCray[iterator].id}
               onEnd={() => {this.changeIterator(1)}}
               opts={opts}
-              videoId={somethingCray[iterator]}
+              videoId={somethingCray[iterator].id}
             />
           ) :
-          (<p>Loading...</p>)
+          (<span>Loading...</span>)
         }
-        <FaAngleRight size={"10em"} color={iterator === somethingCray.length - 1 ? 'grey' : 'inherit'} onClick={() => this.changeIterator(1)} />
+        <FaAngleRight 
+          size={"10em"} 
+          color={iterator === somethingCray.length - 1 ? 'grey' : 'inherit'} 
+          onClick={() => this.changeIterator(1)} 
+        />
+        <div>
+          {somethingCray.length ?
+            (<span>{somethingCray[iterator].date}</span>)
+            :
+            (<span></span>)
+          }
+        </div>
       </div>
     );
   }
