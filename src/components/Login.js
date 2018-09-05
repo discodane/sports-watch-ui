@@ -1,18 +1,17 @@
 import React from 'react';
 import {GoogleLogin} from 'react-google-oauth';
 
-const tryRouting = () => {
-  window.location = '/watch';
+const tryRouting = (somethingelse, updateLoginStatus) => {
+  console.log({somethingelse});
+  updateLoginStatus(somethingelse.w3.U3);
 }
 
 const Login = (props) => {
-
-  console.log('yeah', props.children);
   return (
       <div>
         <h2>LOGIN</h2>
         <GoogleLogin 
-          onLoginSuccess={tryRouting}
+          onLoginSuccess={(response) => tryRouting(response, props.updateLoginStatus)}
         />
       </div>
     )
