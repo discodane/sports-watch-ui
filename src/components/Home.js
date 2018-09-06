@@ -44,7 +44,6 @@ class Home extends Component {
         autoplay: 1
       }
     }
-    console.log({somethingCray});
     return (
       <div className="App">
         <FaAngleLeft 

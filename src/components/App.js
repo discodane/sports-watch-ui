@@ -3,8 +3,9 @@ import {GoogleAPI} from 'react-google-oauth';
 import PropTypes from 'prop-types';
 
 //App Components
-import Home from './Home';
-import Login from './Login';
+// import Home from './Home';
+// import Login from './Login';
+import Starter from './Starter';
 
 
 class App extends Component {
@@ -13,6 +14,7 @@ class App extends Component {
     this.state = {
       loginStatus: false,
       email: '',
+      loaded: false,
     }
     this.updateLoginStatus = this.updateLoginStatus.bind(this);
   }
@@ -22,18 +24,33 @@ class App extends Component {
   }
 
   componentDidMount() {
-    console.log(window.gapi.auth2.getAuthInstance());
+    window.gapi.load('auth2', async () => {
+      let someObj
+      try {
+        someObj = await window.gapi.auth2.init({clientId: "743246055286-9r431e5rq95qs24r904rnupc3fnrg09a.apps.googleusercontent.com"});
+      } catch(err) {
+        someObj = await window.gapi.auth2.getAuthInstance();
+      }
+      const somethingElse = await someObj.currentUser.get();
+      if(!somethingElse.w3) {
+        this.setState({loaded: true});
+      } else {
+        this.setState({loginStatus: true, email: somethingElse.w3.U3, loaded: true});
+      }
+    });
   }
 
   render(){
-    console.log(this.state);
     return(
       <GoogleAPI 
         clientId="743246055286-9r431e5rq95qs24r904rnupc3fnrg09a.apps.googleusercontent.com"
       >
         <div className="container">
-          {!this.state.loginStatus && (<Login updateLoginStatus={this.updateLoginStatus}/>)}
-          {this.state.loginStatus && (<Home />)}
+          <Starter />
+          {/* {!this.state.loaded && (<span>Loading...</span>)}
+          {(!this.state.loginStatus && this.state.loaded) && (<Login updateLoginStatus={this.updateLoginStatus}/>)}
+
+          {this.state.loginStatus && (<Home />)} */}
         </div>
       </GoogleAPI>
     );
